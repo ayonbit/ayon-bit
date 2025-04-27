@@ -24,7 +24,7 @@ export const authOptions = {
       if (session.user && user?.id) {
         session.user.id = user.id;
 
-        session.user.role = "user"; //if needed else no use
+        session.user.role = "user";
       }
       return session;
     },
