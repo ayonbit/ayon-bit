@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  // output   = "./generated/prisma/client"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -52,12 +52,12 @@ model User {
 model Post {
   id        String   @id @default(cuid()) @map("_id")
   createdAt DateTime @default(now())
-  slug  String   @unique
-  title String
-  desc  String
-  img   String[]
-  views Int      @default(0)
-  tags  String[]
+  slug      String   @unique
+  title     String
+  desc      String
+  img       String[]
+  views     Int      @default(0)
+  tags      String[]
 
   userEmail String
   user      User      @relation(fields: [userEmail], references: [email])
