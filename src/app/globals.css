@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  body {
+    @apply font-primary bg-primary text-white leading-loose;
+  }
+  .h1 {
+    @apply text-[48px] xl:text-[80px] leading-[1.1] font-semibold;
+  }
+  .h2 {
+    @apply text-[36px] xl:text-[48px] leading-[1.1] font-semibold;
+  }
+  .h3 {
+    @apply text-[20px] xl:text-[24px] leading-[1.1] font-semibold;
+  }
+  .text-outline {
+    -webkit-text-stroke: 1px #ffffff;
+  }
+  .text-outline-hover {
+    -webkit-text-stroke: 1px #00ff99;
+  }
+}
+/*editor.module.css */
+.tiptap h1 {
+  @apply text-2xl font-bold my-4;
+}
+.tiptap h2 {
+  @apply text-xl font-semibold my-3;
+}
+.tiptap h3 {
+  @apply text-lg font-medium my-2;
+}
+.tiptap ul {
+  @apply list-disc pl-6 my-3;
+}
+.tiptap ol {
+  @apply list-decimal pl-6 my-3;
+}
+.tiptap blockquote {
+  @apply border-l-4 border-gray-500 pl-4 italic my-4;
+}

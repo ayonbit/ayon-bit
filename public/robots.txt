@@ -1,0 +1,12 @@
+# Allow all bots to crawl the site
+User-agent: *
+Disallow: /admin/
+Disallow: /write/
+Disallow: /sign-in/
+Disallow: /dashboard/
+
+# Block API endpoints from being crawled
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://ayonbit.me/sitemap.xml
