@@ -9,7 +9,7 @@ Disallow: /dashboard/
 Allow: /api/sitemap
 
 # Block other API endpoints from being crawled
-Disallow: /api/
+Disallow: /api/*
 
 # Sitemap location
 Sitemap: https://ayonbit.me/api/sitemap
