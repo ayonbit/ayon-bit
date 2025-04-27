@@ -11,8 +11,8 @@ export const authOptions = {
     }),
   ],
   pages: {
-    signIn: "/login",
-    error: "/login",
+    signIn: "/sign-in",
+    error: "/sign-in",
   },
   session: {
     strategy: "database",
