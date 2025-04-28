@@ -32,7 +32,7 @@ export default function RichTextEditor({ content, onChange }) {
       Image.configure({
         HTMLAttributes: {
           class:
-            "rounded-md max-w-[400px] max-h-[400px] w-auto h-auto mx-auto my-4 rounded-md",
+            "rounded-md max-w-[500px] max-h-[500px] w-auto h-auto mx-auto my-4 rounded-md",
         },
       }),
     ],
