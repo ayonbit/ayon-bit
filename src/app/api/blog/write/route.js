@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
 
+export const dynamic = "force-dynamic";
+
 // POST BLOG POST
 export async function POST(req) {
   try {
@@ -16,11 +18,32 @@ export async function POST(req) {
     const body = await req.json();
     const { title, desc, tags, img } = body;
 
+    if (!title || !desc) {
+      return NextResponse.json(
+        { message: "Title and description are required." },
+        { status: 400 }
+      );
+    }
+
     const slug = slugify(title, { lower: true, strict: true });
 
-    // Handle base64 image if it's a single image
+    const existingPost = await prisma.post.findUnique({ where: { slug } });
+    if (existingPost) {
+      return NextResponse.json(
+        { message: "Post with this title already exists." },
+        { status: 400 }
+      );
+    }
+
     let cloudinaryUrls = [];
     if (img && Array.isArray(img)) {
+      if (img.length > 5) {
+        return NextResponse.json(
+          { message: "You can upload a maximum of 5 images." },
+          { status: 400 }
+        );
+      }
+
       for (const image of img) {
         const uploadRes = await cloudinary.uploader.upload(image, {
           folder: "posts",
@@ -29,7 +52,6 @@ export async function POST(req) {
       }
     }
 
-    // Create post
     const newPost = await prisma.post.create({
       data: {
         title,

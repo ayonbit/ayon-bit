@@ -48,14 +48,17 @@ export default function WritePage() {
       return;
     }
 
+    if (image && image.length > 5) {
+      toast.error("You can upload a maximum of 5 images.");
+      return;
+    }
+
     const body = {
       title,
       tags,
       img: image || [],
       desc: post,
     };
-
-    console.log("Data being submitted:", body.img);
 
     try {
       const res = await fetch("/api/blog/write", {
