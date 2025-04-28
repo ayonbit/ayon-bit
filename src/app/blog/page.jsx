@@ -1,5 +1,7 @@
 import BlogPageContent from "@/components/Blog/BlogPageContent";
 
+export const dynamic = "force-dynamic"; 
+
 const getData = async () => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`, {
     cache: "no-store",
@@ -10,7 +12,7 @@ const getData = async () => {
   return res.json();
 };
 
-//SEO
+// SEO
 export const metadata = {
   title: "My Latest Blog",
   description:
@@ -37,14 +39,13 @@ export const metadata = {
     image: `${process.env.NEXT_PUBLIC_SITE_URL}/images/opengraph-image.png`,
   },
 };
+
 const BlogPage = async () => {
-  // Fetch initial data on server
   const allPosts = await getData();
   const initialPosts = allPosts;
 
   return (
     <>
-      {/* Header Section */}
       <header className="text-center mb-10 lg:mb-14">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-accent mb-4 sm:mb-6">
           My Latest Blog
