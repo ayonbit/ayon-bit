@@ -1,5 +1,4 @@
 "use client";
-
 import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
@@ -11,7 +10,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MenuBar from "./MenuBar";
 import "./styles.scss";
 
@@ -36,11 +35,19 @@ const CustomTableCell = TableCell.extend({
 });
 
 export default function RichTextEditor({ content, onChange }) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
   const extensions = useMemo(
     () => [
       StarterKit.configure({
         heading: {
-          levels: [1, 2, 3, 4, 5, 6], // Include all heading levels here
+          levels: [1, 2, 3, 4, 5, 6],
         },
         bulletList: {
           HTMLAttributes: { class: "list-disc pl-6" },
@@ -98,10 +105,12 @@ export default function RichTextEditor({ content, onChange }) {
 
   const editor = useEditor({
     extensions,
-    content: content || "<p></p>",
+    content: isMounted ? content || "<p></p>" : "<p></p>",
     autofocus: "end",
     injectCSS: false,
     editorProps: {
+      immediatelyRender: false,
+      enablePersistence: false,
       attributes: {
         class:
           "tiptap min-h-[200px] px-4 py-3 bg-[#2a2a35] text-white border border-gray-600 rounded-md focus:outline-none prose prose-invert max-w-none",
@@ -157,15 +166,16 @@ export default function RichTextEditor({ content, onChange }) {
         return false;
       },
     },
+
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       onChange(html);
     },
-    onCreate: ({ editor }) => {
-      console.log("Editor initialized");
+    onCreate: () => {
+      setIsReady(true);
     },
     onDestroy: () => {
-      console.log("Editor destroyed");
+      setIsReady(false);
     },
   });
 
@@ -175,8 +185,13 @@ export default function RichTextEditor({ content, onChange }) {
     }
   }, [content, editor]);
 
-  if (!editor) {
-    return <div className="min-h-[200px] bg-[#2a2a35] rounded-md"></div>;
+  if (!isMounted || !editor || !isReady) {
+    return (
+      <div className="w-full space-y-2">
+        <div className="min-h-[40px] bg-[#2a2a35] rounded-md animate-pulse"></div>
+        <div className="min-h-[200px] bg-[#2a2a35] rounded-md animate-pulse"></div>
+      </div>
+    );
   }
 
   return (

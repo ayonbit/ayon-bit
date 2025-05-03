@@ -1,167 +1,217 @@
+"use client";
+
 import { Toggle } from "@/components/ui/toggle";
-import {
-  AlignCenter,
-  AlignLeft,
-  AlignRight,
-  Bold,
-  Code2,
-  Heading1,
-  Heading2,
-  Heading3,
-  Highlighter,
-  ImageIcon,
-  Italic,
-  Link2,
-  List,
-  ListOrdered,
-  Minus,
-  Redo,
-  Strikethrough,
-  Table2,
-  Underline,
-  Undo,
-} from "lucide-react";
 import { useMemo } from "react";
-import { BsBlockquoteLeft } from "react-icons/bs";
+import {
+  FaAlignCenter,
+  FaAlignJustify,
+  FaAlignLeft,
+  FaAlignRight,
+  FaBold,
+  FaCode,
+  FaCodeBranch,
+  FaHighlighter,
+  FaImage,
+  FaItalic,
+  FaLink,
+  FaListOl,
+  FaListUl,
+  FaObjectGroup,
+  FaObjectUngroup,
+  FaParagraph,
+  FaPlus,
+  FaQuoteLeft,
+  FaRedo,
+  FaStrikethrough,
+  FaTable,
+  FaTasks,
+  FaTh,
+  FaTrash,
+  FaUnderline,
+  FaUndo,
+} from "react-icons/fa";
+import { MdHorizontalRule } from "react-icons/md";
 import Tooltip from "./ToolTip";
+import "./styles.scss";
 
 export default function MenuBar({ editor }) {
-  const iconSize = 18;
-
-  const Options = useMemo(() => {
+  const menuOptions = useMemo(() => {
     if (!editor) return [];
 
     return [
+      // Text Formatting
       {
-        icon: <Heading1 size={iconSize} />,
-        onClick: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-        pressed: editor.isActive("heading", { level: 1 }),
-        tooltip: "Heading 1",
-      },
-      {
-        icon: <Heading2 size={iconSize} />,
-        onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
-        pressed: editor.isActive("heading", { level: 2 }),
-        tooltip: "Heading 2",
-      },
-      {
-        icon: <Heading3 size={iconSize} />,
-        onClick: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
-        pressed: editor.isActive("heading", { level: 3 }),
-        tooltip: "Heading 3",
-      },
-      {
-        icon: <Bold size={iconSize} />,
+        icon: <FaBold />,
         onClick: () => editor.chain().focus().toggleBold().run(),
-        pressed: editor.isActive("bold"),
+        isActive: editor.isActive("bold"),
         tooltip: "Bold",
       },
       {
-        icon: <Italic size={iconSize} />,
+        icon: <FaItalic />,
         onClick: () => editor.chain().focus().toggleItalic().run(),
-        pressed: editor.isActive("italic"),
+        isActive: editor.isActive("italic"),
         tooltip: "Italic",
       },
       {
-        icon: <Strikethrough size={iconSize} />,
-        onClick: () => editor.chain().focus().toggleStrike().run(),
-        pressed: editor.isActive("strike"),
-        tooltip: "Strikethrough",
-      },
-      {
-        icon: <Underline size={iconSize} />,
+        icon: <FaUnderline />,
         onClick: () => editor.chain().focus().toggleUnderline().run(),
-        pressed: editor.isActive("underline"),
+        isActive: editor.isActive("underline"),
         tooltip: "Underline",
       },
       {
-        icon: <Highlighter size={iconSize} />,
+        icon: <FaStrikethrough />,
+        onClick: () => editor.chain().focus().toggleStrike().run(),
+        isActive: editor.isActive("strike"),
+        tooltip: "Strikethrough",
+      },
+      {
+        icon: <FaHighlighter />,
         onClick: () => editor.chain().focus().toggleHighlight().run(),
-        pressed: editor.isActive("highlight"),
+        isActive: editor.isActive("highlight"),
         tooltip: "Highlight",
       },
       {
-        icon: <AlignLeft size={iconSize} />,
+        icon: <FaCode />,
+        onClick: () => editor.chain().focus().toggleCode().run(),
+        isActive: editor.isActive("code"),
+        tooltip: "Code",
+      },
+
+      // Headings
+      {
+        icon: <span className="font-bold">H1</span>,
+        onClick: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+        isActive: editor.isActive("heading", { level: 1 }),
+        tooltip: "Heading 1",
+      },
+      {
+        icon: <span className="font-bold">H2</span>,
+        onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+        isActive: editor.isActive("heading", { level: 2 }),
+        tooltip: "Heading 2",
+      },
+      {
+        icon: <span className="font-bold">H3</span>,
+        onClick: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+        isActive: editor.isActive("heading", { level: 3 }),
+        tooltip: "Heading 3",
+      },
+      {
+        icon: <span className="font-bold">H4</span>,
+        onClick: () => editor.chain().focus().toggleHeading({ level: 4 }).run(),
+        isActive: editor.isActive("heading", { level: 4 }),
+        tooltip: "Heading 4",
+      },
+      {
+        icon: <span className="font-bold">H5</span>,
+        onClick: () => editor.chain().focus().toggleHeading({ level: 5 }).run(),
+        isActive: editor.isActive("heading", { level: 5 }),
+        tooltip: "Heading 5",
+      },
+      {
+        icon: <span className="font-bold">H6</span>,
+        onClick: () => editor.chain().focus().toggleHeading({ level: 6 }).run(),
+        isActive: editor.isActive("heading", { level: 6 }),
+        tooltip: "Heading 6",
+      },
+      {
+        icon: <FaParagraph />,
+        onClick: () => editor.chain().focus().setParagraph().run(),
+        isActive: editor.isActive("paragraph"),
+        tooltip: "Paragraph",
+      },
+
+      // Text Alignment
+      {
+        icon: <FaAlignLeft />,
         onClick: () => editor.chain().focus().setTextAlign("left").run(),
-        pressed: editor.isActive({ textAlign: "left" }),
+        isActive: editor.isActive({ textAlign: "left" }),
         tooltip: "Align Left",
       },
       {
-        icon: <AlignCenter size={iconSize} />,
+        icon: <FaAlignCenter />,
         onClick: () => editor.chain().focus().setTextAlign("center").run(),
-        pressed: editor.isActive({ textAlign: "center" }),
+        isActive: editor.isActive({ textAlign: "center" }),
         tooltip: "Align Center",
       },
       {
-        icon: <AlignRight size={iconSize} />,
+        icon: <FaAlignRight />,
         onClick: () => editor.chain().focus().setTextAlign("right").run(),
-        pressed: editor.isActive({ textAlign: "right" }),
+        isActive: editor.isActive({ textAlign: "right" }),
         tooltip: "Align Right",
       },
       {
-        icon: <List size={iconSize} />,
+        icon: <FaAlignJustify />,
+        onClick: () => editor.chain().focus().setTextAlign("justify").run(),
+        isActive: editor.isActive({ textAlign: "justify" }),
+        tooltip: "Justify",
+      },
+
+      // Lists
+      {
+        icon: <FaListUl />,
         onClick: () => editor.chain().focus().toggleBulletList().run(),
-        pressed: editor.isActive("bulletList"),
+        isActive: editor.isActive("bulletList"),
         tooltip: "Bullet List",
       },
       {
-        icon: <ListOrdered size={iconSize} />,
+        icon: <FaListOl />,
         onClick: () => editor.chain().focus().toggleOrderedList().run(),
-        pressed: editor.isActive("orderedList"),
+        isActive: editor.isActive("orderedList"),
         tooltip: "Ordered List",
       },
       {
-        icon: <BsBlockquoteLeft size={iconSize} />,
+        icon: <FaTasks />,
+        onClick: () => editor.chain().focus().toggleTaskList().run(),
+        isActive: editor.isActive("taskList"),
+        tooltip: "Task List",
+      },
+
+      // Blocks
+      {
+        icon: <FaQuoteLeft />,
         onClick: () => editor.chain().focus().toggleBlockquote().run(),
-        pressed: editor.isActive("blockquote"),
+        isActive: editor.isActive("blockquote"),
         tooltip: "Blockquote",
       },
       {
-        icon: <Code2 size={iconSize} />,
+        icon: <FaCodeBranch />,
         onClick: () => editor.chain().focus().toggleCodeBlock().run(),
-        pressed: editor.isActive("codeBlock"),
+        isActive: editor.isActive("codeBlock"),
         tooltip: "Code Block",
       },
       {
-        icon: <Minus size={iconSize} />,
+        icon: <MdHorizontalRule />,
         onClick: () => editor.chain().focus().setHorizontalRule().run(),
-        pressed: false,
+        isActive: false,
         tooltip: "Horizontal Rule",
       },
+
+      // Links & Media
       {
-        icon: <Link2 size={iconSize} />,
+        icon: <FaLink />,
         onClick: () => {
-          const url = prompt("Enter URL");
-          if (url) editor.chain().focus().setLink({ href: url }).run();
-        },
-        pressed: editor.isActive("link"),
-        tooltip: "Insert Link",
-      },
-      {
-        icon: <Table2 size={iconSize} />,
-        onClick: () =>
+          const previousUrl = editor.getAttributes("link").href;
+          const url = window.prompt("URL", previousUrl);
+
+          if (url === null) return;
+          if (url === "") {
+            editor.chain().focus().extendMarkRange("link").unsetLink().run();
+            return;
+          }
+
           editor
             .chain()
             .focus()
-            .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-            .run(),
-        pressed: false,
-        tooltip: "Insert Table",
+            .extendMarkRange("link")
+            .setLink({ href: url })
+            .run();
+        },
+        isActive: editor.isActive("link"),
+        tooltip: "Link",
       },
       {
-        icon: <Undo size={iconSize} />,
-        onClick: () => editor.chain().focus().undo().run(),
-        pressed: false,
-        tooltip: "Undo",
-      },
-      {
-        icon: <Redo size={iconSize} />,
-        onClick: () => editor.chain().focus().redo().run(),
-        pressed: false,
-        tooltip: "Redo",
-      },
-      {
-        icon: <ImageIcon size={iconSize} />,
+        icon: <FaImage />,
         onClick: () => {
           const input = document.createElement("input");
           input.type = "file";
@@ -181,22 +231,103 @@ export default function MenuBar({ editor }) {
 
           input.click();
         },
-        pressed: false,
-        tooltip: "Insert Image",
+        isActive: false,
+        tooltip: "Image",
+      },
+
+      // Table Controls
+      {
+        icon: <FaTable />,
+        onClick: () =>
+          editor
+            .chain()
+            .focus()
+            .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+            .run(),
+        isActive: false,
+        tooltip: "Insert Table",
+      },
+      {
+        icon: <FaPlus />,
+        onClick: () => editor.chain().focus().addColumnAfter().run(),
+        isActive: false,
+        disabled: !editor.can().addColumnAfter(),
+        tooltip: "Add Column",
+      },
+      {
+        icon: <FaPlus style={{ transform: "rotate(90deg)" }} />,
+        onClick: () => editor.chain().focus().addRowAfter().run(),
+        isActive: false,
+        disabled: !editor.can().addRowAfter(),
+        tooltip: "Add Row",
+      },
+      {
+        icon: <FaTrash />,
+        onClick: () => editor.chain().focus().deleteColumn().run(),
+        isActive: false,
+        disabled: !editor.can().deleteColumn(),
+        tooltip: "Delete Column",
+      },
+      {
+        icon: <FaTrash style={{ transform: "rotate(90deg)" }} />,
+        onClick: () => editor.chain().focus().deleteRow().run(),
+        isActive: false,
+        disabled: !editor.can().deleteRow(),
+        tooltip: "Delete Row",
+      },
+      {
+        icon: <FaTh />,
+        onClick: () => editor.chain().focus().deleteTable().run(),
+        isActive: false,
+        disabled: !editor.can().deleteTable(),
+        tooltip: "Delete Table",
+      },
+      {
+        icon: <FaObjectGroup />,
+        onClick: () => editor.chain().focus().mergeCells().run(),
+        isActive: false,
+        disabled: !editor.can().mergeCells(),
+        tooltip: "Merge Cells",
+      },
+      {
+        icon: <FaObjectUngroup />,
+        onClick: () => editor.chain().focus().splitCell().run(),
+        isActive: false,
+        disabled: !editor.can().splitCell(),
+        tooltip: "Split Cell",
+      },
+
+      // History
+      {
+        icon: <FaUndo />,
+        onClick: () => editor.chain().focus().undo().run(),
+        isActive: false,
+        disabled: !editor.can().undo(),
+        tooltip: "Undo",
+      },
+      {
+        icon: <FaRedo />,
+        onClick: () => editor.chain().focus().redo().run(),
+        isActive: false,
+        disabled: !editor.can().redo(),
+        tooltip: "Redo",
       },
     ];
   }, [editor]);
 
   return (
-    <div>
+    <div className="editor-menu-bar">
       {editor && (
-        <div className="flex flex-wrap gap-2 border border-gray-600 rounded-md p-2 mb-3 bg-[#2a2a35]">
-          {Options.map((option, idx) => (
-            <Tooltip key={idx} text={option.tooltip}>
+        <div className="flex flex-wrap gap-1 p-1 border rounded-md bg-background">
+          {menuOptions.map((option, index) => (
+            <Tooltip key={index} text={option.tooltip}>
               <Toggle
-                pressed={option.pressed}
+                size="sm"
+                pressed={option.isActive}
                 onPressedChange={option.onClick}
-                className="p-1 rounded-md"
+                disabled={option.disabled}
+                className="px-2 py-1 h-auto text-sm"
+                aria-label={option.tooltip}
               >
                 {option.icon}
               </Toggle>

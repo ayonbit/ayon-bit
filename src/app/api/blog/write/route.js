@@ -37,13 +37,14 @@ export async function POST(req) {
 
     let cloudinaryUrls = [];
     if (img && Array.isArray(img)) {
-      if (img.length > 5) {
+      if (img.length > 35) {
         return NextResponse.json(
           { message: "You can upload a maximum of 5 images." },
           { status: 400 }
         );
       }
 
+      // Upload images to Cloudinary with size transformation
       for (const image of img) {
         const uploadRes = await cloudinary.uploader.upload(image, {
           folder: "posts",

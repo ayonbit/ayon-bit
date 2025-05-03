@@ -3,6 +3,7 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetDescription,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -28,90 +29,108 @@ const MobileNav = () => {
   ];
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger aria-label="Open menu">
-        <CiMenuFries className="text-[32px] text-accent" />
-      </SheetTrigger>
+    <div className="">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild>
+          <button
+            aria-label="Open navigation menu"
+            className="focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md"
+          >
+            <CiMenuFries className="text-[32px] text-accent" />
+          </button>
+        </SheetTrigger>
 
-      <SheetContent className="flex flex-col">
-        <SheetTitle className="mt-32 mb-40 text-center">
-          <SheetClose asChild>
-            <Link href="/" className="text-4xl font-semibold text-white">
-              Ayon Bit<span className="text-accent">.</span>
-            </Link>
-          </SheetClose>
-        </SheetTitle>
+        <SheetContent className="flex flex-col w-full sm:max-w-sm">
+          {/* Add SheetDescription for accessibility */}
+          <SheetDescription className="sr-only">
+            Main navigation menu
+          </SheetDescription>
 
-        <nav className="flex flex-col items-center gap-8">
-          {links.map((link) => (
-            <SheetClose key={link.path} asChild>
+          <SheetTitle className="mt-8 sm:mt-12 mb-12 sm:mb-20 text-center">
+            <SheetClose asChild>
               <Link
-                href={link.path}
-                className={`text-xl capitalize ${
-                  pathname === link.path
-                    ? "text-accent border-b-2 border-accent"
-                    : ""
-                }`}
+                href="/"
+                className="text-3xl sm:text-4xl font-semibold text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md"
               >
-                {link.name}
+                Ayon Bit<span className="text-accent">.</span>
               </Link>
             </SheetClose>
-          ))}
+          </SheetTitle>
 
-          {status === "authenticated" ? (
-            <>
-              <SheetClose asChild>
+          <nav className="flex flex-col items-center gap-6 sm:gap-8">
+            {links.map((link) => (
+              <SheetClose key={link.path} asChild>
                 <Link
-                  href="/write"
-                  className={`text-xl ${
-                    pathname === "/write"
+                  href={link.path}
+                  className={`text-lg sm:text-xl capitalize focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md px-2 ${
+                    pathname === link.path
                       ? "text-accent border-b-2 border-accent"
                       : ""
                   }`}
+                  aria-current={pathname === link.path ? "page" : undefined}
                 >
-                  Write Post
+                  {link.name}
                 </Link>
               </SheetClose>
-              <SheetClose asChild>
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    signOut({ callbackUrl: "/" });
-                  }}
-                  className="text-xl capitalize"
-                >
-                  Log Out
-                </button>
-              </SheetClose>
-            </>
-          ) : status === "unauthenticated" ? (
-            <SheetClose asChild>
-              <Link
-                href="/sign-in"
-                onClick={() => setOpen(false)}
-                className="text-xl capitalize"
-              >
-                Sign In
-              </Link>
-            </SheetClose>
-          ) : (
-            <div className="w-20 h-5 rounded bg-gray-200 animate-pulse" />
-          )}
+            ))}
 
-          <SheetClose asChild>
-            <Button asChild variant="outline">
-              <Link
-                href="https://upwork.com/freelancers/~013d3ec6c65c896873"
-                target="_blank"
-                rel="noopener"
-              >
-                Hire Me
-              </Link>
-            </Button>
-          </SheetClose>
-        </nav>
-      </SheetContent>
-    </Sheet>
+            {status === "authenticated" ? (
+              <>
+                <SheetClose asChild>
+                  <Link
+                    href="/write"
+                    className={`text-lg sm:text-xl focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md px-2 ${
+                      pathname === "/write"
+                        ? "text-accent border-b-2 border-accent"
+                        : ""
+                    }`}
+                    aria-current={pathname === "/write" ? "page" : undefined}
+                  >
+                    Write Post
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      signOut({ callbackUrl: "/" });
+                    }}
+                    className="text-lg sm:text-xl capitalize focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md px-2"
+                  >
+                    Log Out
+                  </button>
+                </SheetClose>
+              </>
+            ) : status === "unauthenticated" ? (
+              <SheetClose asChild>
+                <Link
+                  href="/sign-in"
+                  onClick={() => setOpen(false)}
+                  className="text-lg sm:text-xl capitalize focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-md px-2"
+                >
+                  Sign In
+                </Link>
+              </SheetClose>
+            ) : (
+              <div className="w-20 h-5 rounded bg-gray-200 animate-pulse" />
+            )}
+
+            <SheetClose asChild>
+              <Button asChild variant="outline" className="mt-4">
+                <Link
+                  href="https://upwork.com/freelancers/~013d3ec6c65c896873"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+                >
+                  Hire Me
+                </Link>
+              </Button>
+            </SheetClose>
+          </nav>
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 };
 

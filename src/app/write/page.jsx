@@ -1,8 +1,8 @@
 "use client";
-
-import TextEditor from "@/components/TextEditor/TextEditor";
+import RichTextEditor from "@/components/TextEditor/RichTextEditor.client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { resizeImage } from "@/utils/imageResizer";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -23,13 +23,24 @@ export default function WritePage() {
     if (status === "unauthenticated") router.push("/sign-in");
   }, [status, router]);
 
-  const handleChange = (html) => {
+  const handleChange = async (html) => {
     setPost(html);
 
     // Extract ALL image sources from HTML content
     const matches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)];
     const imageUrls = matches.map((match) => match[1]);
-    setImage(imageUrls); // imageUrls is an array of base64 strings
+
+    // Resize images to 500x500
+    const resizedImages = await Promise.all(
+      imageUrls.map(async (imgSrc) => {
+        if (imgSrc.startsWith("data:image")) {
+          return resizeImage(imgSrc, 500, 500);
+        }
+        return imgSrc; // For external URLs (if you allow them)
+      })
+    );
+
+    setImage(resizedImages);
   };
 
   const handleTagInput = (e) => {
@@ -111,12 +122,12 @@ export default function WritePage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Write your title"
-              className="mb-4 border border-gray-600 bg-[#2a2a35] rounded px-3 py-1 text-white"
+              className="mb-4 border border-gray-600 bg-[#2a2a35] rounded px-3 py-1 text-white w-full" // Added w-full
             />
 
             {/* TipTap Editor as main post content */}
             <div className="mb-4">
-              <TextEditor content={post} onChange={handleChange} />
+              <RichTextEditor content={post} onChange={handleChange} />
             </div>
 
             {/* Tags */}

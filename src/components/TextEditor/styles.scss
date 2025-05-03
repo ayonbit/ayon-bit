@@ -1,8 +1,22 @@
 .tiptap {
-  color: var(--text-color, white);
+  --bg-primary: #2a2a35;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #b0b0b0;
+  --border-color: #f7f7fa;
+  --accent-color: #4f9df9;
+  --highlight-color: #faf594;
+  --code-bg: #2a2a35;
+  --blockquote-border: #4f9df9;
+  --table-header-bg: #2a2a35;
+  --table-border: #7c7c80;
+  --table-cell-highlight: rgba(79, 157, 249, 0.1);
+
+  color: var(--text-primary);
   font-size: 1rem;
   line-height: 1.75;
   word-break: break-word;
+  background-color: var(--bg-primary);
 
   /* Reset first element's margin */
   > *:first-child {
@@ -17,9 +31,10 @@
   h5,
   h6 {
     line-height: 1.2;
-    margin-top: 2.5rem;
+    margin-top: 2rem;
     margin-bottom: 1rem;
     font-weight: 600;
+    color: var(--text-primary);
   }
 
   h1 {
@@ -40,18 +55,26 @@
     font-size: 1.1rem;
   }
 
+  /* Paragraphs */
+  p {
+    margin: 1rem 0;
+    color: var(--text-secondary);
+  }
+
   /* Lists */
   ul,
   ol {
-    padding-left: 1.25rem;
+    padding-left: 1.5rem;
     margin: 1.25rem 0;
+    color: var(--text-secondary);
 
     li {
       margin-bottom: 0.5rem;
-    }
+      padding-left: 0.5rem;
 
-    li p {
-      margin: 0.25em 0;
+      p {
+        margin: 0.25em 0;
+      }
     }
   }
 
@@ -65,28 +88,36 @@
 
   /* Blockquotes */
   blockquote {
-    border-left: 4px solid var(--gray-3, #444);
-    padding-left: 1rem;
+    border-left: 3px solid var(--blockquote-border);
+    padding: 0.75rem 1rem;
     margin: 1.5rem 0;
-    color: var(--gray-2, #aaa);
-    font-style: italic;
+    background-color: rgba(31, 41, 55, 0.3);
+    border-radius: 0 4px 4px 0;
+    color: var(--text-secondary);
+
+    p {
+      margin: 0;
+    }
   }
 
   /* Code & Pre */
   code {
-    background-color: var(--purple-light, #3f3cbb33);
+    background-color: var(--code-bg);
     border-radius: 4px;
     font-size: 0.9em;
     padding: 0.25em 0.4em;
+    color: var(--highlight-color);
+    font-family: "Courier New", monospace;
   }
 
   pre {
-    background-color: var(--black, #111);
-    border-radius: 8px;
-    color: var(--white, #eee);
+    background-color: var(--code-bg);
+    border-radius: 6px;
+    color: var(--highlight-color);
     padding: 1rem;
     overflow-x: auto;
     margin: 1.5rem 0;
+    border: 1px solid var(--border-color);
 
     code {
       background: none;
@@ -98,29 +129,109 @@
 
   /* Highlight */
   mark {
-    background-color: #faf594;
+    background-color: var(--highlight-color);
     padding: 0.1rem 0.3rem;
     border-radius: 0.3rem;
+    color: #000;
   }
 
   /* Horizontal line */
   hr {
     border: none;
-    border-top: 1px solid var(--gray-2, #666);
-    margin: 2rem 0;
+    border-top: 1px solid var(--border-color);
+    margin: 1.5rem 0;
   }
 
   /* Links */
   a {
-    color: var(--link-color, #4f9df9);
-    text-decoration: underline;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: opacity 0.2s;
+
+    &:hover {
+      text-decoration: underline;
+      opacity: 0.9;
+    }
   }
 
-  /* Images (optional) */
+  /* Images */
   img {
     max-width: 100%;
     height: auto;
     margin: 1rem 0;
-    border-radius: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+  }
+
+  /* Tables */
+  .tableWrapper {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: var(--bg-primary);
+
+    td,
+    th {
+      border: 1px solid var(--table-border);
+      padding: 8px 12px;
+      min-width: 60px;
+      position: relative;
+      vertical-align: top;
+      color: var(--text-secondary);
+
+      > * {
+        margin-bottom: 0;
+      }
+    }
+
+    th {
+      background-color: var(--table-header-bg);
+      font-weight: 600;
+      text-align: left;
+      color: var(--text-primary);
+    }
+
+    .selectedCell:after {
+      background: var(--table-cell-highlight);
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .column-resize-handle {
+      background-color: var(--accent-color);
+      position: absolute;
+      right: -2px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      pointer-events: none;
+    }
+  }
+
+  /* Special classes */
+  &.resize-cursor {
+    cursor: col-resize;
+  }
+
+  /* Placeholder styling */
+  .is-empty::before {
+    content: attr(data-placeholder);
+    color: var(--text-tertiary);
+    float: left;
+    height: 0;
+    pointer-events: none;
   }
 }
+
