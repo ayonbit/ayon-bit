@@ -27,9 +27,9 @@ const Photo = () => {
           xl:h-[498px] mix-blend-lighten absolute"
         >
           <Image
-            src={"/assets/profileavatar.png"} //change content
+            src={"/assets/profileavatar.png"}
             alt="profile_ayonbit"
-            className="object-cover "
+            className=" object-fill"
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw,33vw"
             priority
@@ -43,7 +43,7 @@ const Photo = () => {
           viewBox="0 0 506 506"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <motion.circle
+          {/* <motion.circle
             cx="253"
             r="250"
             cy="253"
@@ -61,7 +61,7 @@ const Photo = () => {
               repeat: Infinity,
               repeatType: "reverse",
             }}
-          />
+          /> */}
         </motion.svg>
       </motion.div>
     </div>

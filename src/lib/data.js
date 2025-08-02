@@ -12,6 +12,7 @@ import {
   FaNodeJs,
   FaReact,
   FaTwitter,
+  FaWhatsapp,
 } from "react-icons/fa";
 import {
   SiCisco,
@@ -336,7 +337,7 @@ export const AboutMeData = {
   info: [
     { fieldName: "Name", fieldValue: "Ayon Bit" },
     { fieldName: "Email", fieldValue: "ayonbit@gmail.com" },
-    { fieldName: "Phone", fieldValue: "" },
+    { fieldName: "WhatsApp", fieldValue: "+8801686354606" },
     { fieldName: "Experience", fieldValue: "6+ years" },
     { fieldName: "Nationality", fieldValue: "Bangladeshi" },
     { fieldName: "Skype", fieldValue: "ayon.bit" },
@@ -518,6 +519,7 @@ export const socials = [
   { icon: <FaFacebook />, path: "https://www.facebook.com/ayonbit" },
   { icon: <FaInstagram />, path: "https://www.instagram.com/ayonbit" },
   { icon: <FaTwitter />, path: "https://x.com/ayonbit" },
+  { icon: <FaWhatsapp />, path: "https://wa.me/+8801686354606" },
 
   {
     icon: <FaCoffee />,

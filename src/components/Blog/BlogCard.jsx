@@ -59,6 +59,7 @@ const BlogCard = ({
   className,
   slug,
   index,
+  views,
 }) => {
   const firstDescElement = extractFirstParagraphOrHeading(desc);
 
@@ -143,10 +144,15 @@ const BlogCard = ({
               <span className="text-xs sm:text-sm text-gray-400">
                 {format(new Date(createdAt), "MMM dd yyyy")}
               </span>
-              <BsArrowDownRight
-                className="text-gray-400 group-hover:text-accent transition-colors"
-                aria-hidden="true"
-              />
+              <div className="flex items-center gap-6 text-xs sm:text-sm text-gray-400 group">
+                <span className="text-gray-400 group-hover:text-accent transition-colors">
+                  {views} views
+                </span>
+                <BsArrowDownRight
+                  className="text-gray-400 group-hover:text-accent transition-colors"
+                  aria-hidden="true"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import ContactForm from "@/components/ContactForm";
-import { FaEnvelope, FaMapMarkedAlt } from "react-icons/fa";
+import { FaEnvelope, FaMapMarkedAlt, FaWhatsapp } from "react-icons/fa";
 
 //SEO
 export const metadata = {
@@ -29,8 +29,6 @@ export const metadata = {
   },
 };
 
-
-
 const Contact = () => {
   const contactInfo = [
     {
@@ -38,6 +36,12 @@ const Contact = () => {
       title: "Email",
       description: "ayonbit@gmail.com",
       link: "mailto:ayonbit@gmail.com",
+    },
+    {
+      icon: <FaWhatsapp className="text-xl md:text-2xl" />,
+      title: "WhatsApp",
+      description: "+8801686354606",
+      link: "https://wa.me/+8801686354606",
     },
     {
       icon: <FaMapMarkedAlt className="text-xl md:text-2xl" />,
