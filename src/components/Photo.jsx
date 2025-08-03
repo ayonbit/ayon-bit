@@ -27,7 +27,7 @@ const Photo = () => {
           xl:h-[498px] mix-blend-lighten absolute"
         >
           <Image
-            src={"/assets/profileavatar.png"}
+            src={"/assets/updateprofile.png"}
             alt="profile_ayonbit"
             className=" object-fill"
             fill

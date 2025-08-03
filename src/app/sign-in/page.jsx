@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
@@ -101,9 +102,9 @@ export default function LoginPage() {
           <div className="px-6 py-4 bg-white/5 border-t border-white/10 text-center">
             <p className="text-xs sm:text-sm text-white/50">
               By signing in, you agree to our{" "}
-              <a href="#" className="underline hover:text-white">
+              <Link href="/terms" className="underline hover:text-white">
                 terms & conditions
-              </a>
+              </Link>
             </p>
           </div>
         </div>
