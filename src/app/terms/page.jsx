@@ -5,8 +5,9 @@ const terms = () => {
         <h1 class="text-3xl font-bold mb-6">Sign-In Terms and Conditions</h1>
 
         <p class="mb-4">
-          By using Google Sign-In to access our website/app ("Service"), you
-          agree to the following terms and conditions:
+          By using Google Sign-In to access our website/app
+          &quot;Service&quot;, you agree to the following terms and
+          conditions:
         </p>
 
         <h2 class="text-xl font-semibold mb-2">1. Use of Google Sign-In</h2>

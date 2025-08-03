@@ -1,11 +1,7 @@
 import BlogPageContent from "@/components/Blog/BlogPageContent";
 
-
-
 const getData = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`, {
-    
-  });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`);
   if (!res.ok) {
     throw new Error("Failed to Fetch Blog");
   }
