@@ -90,7 +90,7 @@ async function BlogSinglePageContent({ slug }) {
           Failed to load blog post
         </h2>
         <p className="text-gray-600">
-          We couldn't load the requested blog post. Please try again later.
+          We couldn&apos;t load the requested blog post. Please try again later.
         </p>
       </div>
     );
