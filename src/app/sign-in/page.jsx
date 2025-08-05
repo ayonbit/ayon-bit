@@ -12,11 +12,16 @@ export default function LoginPage() {
   const { status } = useSession();
   const router = useRouter();
 
+  // Redirect if already authenticated
   useEffect(() => {
     if (status === "authenticated") {
       router.push("/write");
     }
   }, [status, router]);
+
+  const handleSignIn = (provider) => {
+    signIn(provider, { callbackUrl: "/write" });
+  };
 
   // if (status === "loading") {
   //   return (
@@ -54,8 +59,9 @@ export default function LoginPage() {
 
             <div className="space-y-3 sm:space-y-4">
               <Button
-                onClick={() => signIn("google")}
-                className="flex items-center justify-center gap-3 w-full transition-all font-medium py-3 px-4 rounded-lg shadow-sm bg-accent hover:bg-white/90  text-sm sm:text-base"
+                onClick={() => handleSignIn("google")}
+                className="w-full gap-3 py-3 bg-accent hover:bg-accent/90 transition-colors"
+                aria-label="Sign in with Google"
               >
                 <FcGoogle className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>Continue with Google</span>

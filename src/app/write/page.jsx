@@ -6,168 +6,203 @@ import { resizeImage } from "@/utils/imageResizer";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
+const MAX_IMAGES = 5;
+const IMAGE_SIZE = 500;
 
 export default function WritePage() {
   const { status } = useSession();
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [post, setPost] = useState("");
-  const [tags, setTags] = useState([]);
+  // Form state
+  const [form, setForm] = useState({
+    title: "",
+    post: "",
+    tags: [],
+    images: null,
+  });
   const [tagInput, setTagInput] = useState("");
-  const [image, setImage] = useState(null);
 
+  // Redirect if unauthenticated
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/sign-in");
+    if (status === "unauthenticated") {
+      router.push("/sign-in?callbackUrl=/write");
+    }
   }, [status, router]);
 
-  const handleChange = async (html) => {
-    setPost(html);
+  // Handle editor content changes with debouncing
+  const handleEditorChange = useCallback(async (html) => {
+    setForm((prev) => ({ ...prev, post: html }));
 
-    // Extract ALL image sources from HTML content
+    // Extract and resize images only if content changed significantly
     const matches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)];
     const imageUrls = matches.map((match) => match[1]);
 
-    // Resize images to 500x500
+    if (imageUrls.length > MAX_IMAGES) {
+      toast.error(`Maximum ${MAX_IMAGES} images allowed`);
+      return;
+    }
+
     const resizedImages = await Promise.all(
       imageUrls.map(async (imgSrc) => {
-        if (imgSrc.startsWith("data:image")) {
-          return resizeImage(imgSrc, 500, 500);
-        }
-        return imgSrc; // For external URLs (if you allow them)
+        return imgSrc.startsWith("data:image")
+          ? await resizeImage(imgSrc, IMAGE_SIZE, IMAGE_SIZE)
+          : imgSrc;
       })
     );
 
-    setImage(resizedImages);
-  };
+    setForm((prev) => ({ ...prev, images: resizedImages }));
+  }, []);
 
+  // Tag management
   const handleTagInput = (e) => {
-    if (e.key === "Enter" && tagInput.trim() !== "") {
+    if (e.key === "Enter" && tagInput.trim()) {
       e.preventDefault();
-      if (!tags.includes(tagInput.trim())) {
-        setTags([...tags, tagInput.trim()]);
+      if (!form.tags.includes(tagInput.trim())) {
+        setForm((prev) => ({
+          ...prev,
+          tags: [...prev.tags, tagInput.trim()],
+        }));
         setTagInput("");
       }
     }
   };
 
+  const removeTag = useCallback((tagToRemove) => {
+    setForm((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
+    }));
+  }, []);
+
+  // Form submission
   const handleSubmit = async () => {
-    if (!title || !post) {
-      toast.error("Title and post content are required!");
+    if (!form.title.trim() || !form.post.trim()) {
+      toast.error("Title and content are required!");
       return;
     }
 
-    if (image && image.length > 5) {
-      toast.error("You can upload a maximum of 5 images.");
-      return;
-    }
-
-    const body = {
-      title,
-      tags,
-      img: image || [],
-      desc: post,
-    };
+    setIsSubmitting(true);
 
     try {
-      const res = await fetch("/api/blog/write", {
+      const response = await fetch("/api/blog/write", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: form.title,
+          tags: form.tags,
+          img: form.images || [],
+          desc: form.post,
+        }),
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("Post created successfully!");
-        router.push("/blog");
-      } else {
-        toast.error(data.message || "Failed to create post");
-      }
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message || "Submission failed");
+
+      toast.success("Post published successfully!");
+      router.push(`/blog/${data.slug || ""}`);
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error("An error occurred during submission.");
+      toast.error(error.message || "Failed to publish post");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  // Loading state
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-primary flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin h-10 w-10 border-4 border-white border-t-transparent rounded-full" />
       </div>
     );
   }
 
+  // Main editor UI
   if (status === "authenticated") {
     return (
       <div className="min-h-screen bg-primary text-white">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-4xl mx-auto px-4 py-8">
           <motion.div
-            whileHover={{ y: -8 }}
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              transition: { delay: 0.3, duration: 0.4, ease: "easeIn" },
-            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <h1 className="text-4xl font-bold mb-6 text-center">
-              Write a New Blog Post
-            </h1>
+            <header className="mb-8 text-center">
+              <h1 className="text-3xl font-bold mb-2">Write a New Post</h1>
+              <p className="text-gray-400">
+                Share your knowledge with the community
+              </p>
+            </header>
 
-            <Input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Write your title"
-              className="mb-4 border border-gray-600 bg-[#2a2a35] rounded px-3 py-1 text-white w-full" // Added w-full
-            />
-
-            {/* TipTap Editor as main post content */}
-            <div className="mb-4">
-              <RichTextEditor content={post} onChange={handleChange} />
-            </div>
-
-            {/* Tags */}
-            <div className="mb-4 mt-4">
-              <label className="block mb-2 text-sm font-medium">Tags:</label>
-              <div className="flex items-center gap-2">
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="title" className="block mb-2 font-medium">
+                  Title
+                </label>
                 <Input
-                  type="text"
+                  id="title"
+                  value={form.title}
+                  onChange={(e) =>
+                    setForm((prev) => ({ ...prev, title: e.target.value }))
+                  }
+                  placeholder="Catchy title here..."
+                  className="w-full bg-gray-800 border-gray-700 focus:border-accent"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 font-medium">Content</label>
+                <RichTextEditor
+                  content={form.post}
+                  onChange={handleEditorChange}
+                  className="min-h-[300px]"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 font-medium">Tags</label>
+                <Input
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleTagInput}
-                  className="border border-gray-600 bg-[#2a2a35] rounded px-3 py-1 text-white"
-                  placeholder="Press enter to add tag"
+                  placeholder="Type and press Enter to add tags"
+                  className="w-full bg-gray-800 border-gray-700"
                 />
+                {form.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {form.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="bg-gray-700 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                      >
+                        {tag}
+                        <button
+                          onClick={() => removeTag(tag)}
+                          className="text-red-400 hover:text-red-300"
+                          aria-label={`Remove tag ${tag}`}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-white/10 px-3 py-1 text-sm rounded flex items-center gap-2"
-                  >
-                    {tag}
-                    <button
-                      onClick={() => setTags(tags.filter((t) => t !== tag))}
-                      className="text-red-400 hover:text-red-600"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-4 flex justify-center">
-              <Button
-                onClick={handleSubmit}
-                className="rounded-md hover:text-white"
-              >
-                Submit Post
-              </Button>
+              <div className="pt-4 border-t border-gray-700">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || !form.title || !form.post}
+                  className="w-full sm:w-auto px-8 py-2 bg-accent hover:bg-accent/90"
+                >
+                  {isSubmitting ? "Publishing..." : "Publish Post"}
+                </Button>
+              </div>
             </div>
           </motion.div>
         </div>

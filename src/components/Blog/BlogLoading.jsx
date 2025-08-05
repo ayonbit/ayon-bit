@@ -8,15 +8,15 @@ export default function BlogLoading() {
         <div className="h-4 w-2/3 mx-auto bg-gray-700 rounded"></div>
       </div>
 
-      {/* Filters Skeleton (if you have filters) */}
+      {/* Filters Skeleton (if you have filters)
       <div className="flex flex-wrap gap-3 mb-8">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="h-8 w-20 bg-gray-700 rounded-full"></div>
         ))}
-      </div>
+      </div> */}
 
       {/* Blog Posts Grid Skeleton */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6 ">
         {[...Array(6)].map((_, i) => (
           <div key={i} className="rounded-lg overflow-hidden">
             {/* Image Placeholder */}
