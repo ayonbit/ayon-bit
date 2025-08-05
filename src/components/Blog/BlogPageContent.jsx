@@ -18,7 +18,7 @@ const BlogPageContent = ({ initialPosts, totalPosts }) => {
   }, []);
 
   return (
-    <div className="mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16">
+    <div className="mx-auto px-4 sm:px-6 ">
       {/* Blog Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {currentPosts.map((item, index) => (

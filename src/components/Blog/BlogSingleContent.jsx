@@ -2,10 +2,9 @@
 import Comments from "@/components/Blog/Comments";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import DOMPurify from "dompurify";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useCallback, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaCalendar, FaComments, FaEye } from "react-icons/fa";
 import { FaFacebookF, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
@@ -25,26 +24,34 @@ const ShareIcons = () => (
 
 const BlogSingleContent = ({ post }) => {
   const [commentCount, setCommentCount] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Initialize DOMPurify only on client side
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Sanitize and prepare the HTML content
   const sanitizedContent = useMemo(() => {
-    if (!post?.desc) return "";
+    if (!isMounted || !post?.desc) return "";
+
+    // Dynamically import DOMPurify only on client side
+    const DOMPurify = require("dompurify");
 
     // Configure DOMPurify
     const clean = DOMPurify.sanitize(post.desc, {
-      ADD_TAGS: ["iframe"], // Allow iframes if needed
+      ADD_TAGS: ["iframe"],
       ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"],
       FORBID_TAGS: ["style", "script"],
       FORBID_ATTR: ["onerror", "onload"],
     });
 
-    // Additional processing if needed
     return clean;
-  }, [post?.desc]);
+  }, [post?.desc, isMounted]);
 
-  const handleCommentCountChange = useCallback((newCount) => {
+  const handleCommentCountChange = (newCount) => {
     setCommentCount(newCount);
-  }, []);
+  };
 
   return (
     <motion.div
@@ -91,18 +98,20 @@ const BlogSingleContent = ({ post }) => {
           </div>
         </div>
 
-        <div
-          className="prose prose-invert max-w-none text-white/90 text-lg leading-relaxed mb-6
-            prose-h1:text-4xl prose-h1:font-bold prose-h1:my-6
-            prose-h2:text-3xl prose-h2:font-semibold prose-h2:my-5
-            prose-h3:text-2xl prose-h3:font-semibold prose-h3:my-4
-            prose-p:my-4 prose-p:text-base
-            prose-img:rounded-lg prose-img:mx-auto prose-img:my-6 prose-img:max-w-full prose-img:h-auto
-            prose-table:w-full prose-th:bg-gray-700 prose-td:border-t prose-td:border-gray-600
-            prose-code:bg-gray-700 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
-            prose-pre:bg-gray-800 prose-pre:p-4 prose-pre:rounded-lg"
-          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-        />
+        {isMounted && (
+          <div
+            className="prose prose-invert max-w-none text-white/90 text-lg leading-relaxed mb-6
+              prose-h1:text-4xl prose-h1:font-bold prose-h1:my-6
+              prose-h2:text-3xl prose-h2:font-semibold prose-h2:my-5
+              prose-h3:text-2xl prose-h3:font-semibold prose-h3:my-4
+              prose-p:my-4 prose-p:text-base
+              prose-img:rounded-lg prose-img:mx-auto prose-img:my-6 prose-img:max-w-full prose-img:h-auto
+              prose-table:w-full prose-th:bg-gray-700 prose-td:border-t prose-td:border-gray-600
+              prose-code:bg-gray-700 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+              prose-pre:bg-gray-800 prose-pre:p-4 prose-pre:rounded-lg"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          />
+        )}
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mt-12 pt-6 border-t border-white/10">
           <div className="w-full sm:w-auto">

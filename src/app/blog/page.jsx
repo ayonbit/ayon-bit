@@ -1,10 +1,12 @@
+import BlogLoading from "@/components/Blog/BlogLoading";
 import BlogPageContent from "@/components/Blog/BlogPageContent";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
 const getData = async () => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`, {
-    cache: "no-store",
+    next: { revalidate: 60 }, // Revalidate every 60 seconds
   });
   if (!res.ok) {
     throw new Error("Failed to Fetch Blog");
@@ -40,13 +42,27 @@ export const metadata = {
   },
 };
 
-const BlogPage = async () => {
-  const allPosts = await getData();
-  const initialPosts = allPosts;
+async function BlogContent({ postsPromise }) {
+  try {
+    const allPosts = await postsPromise;
+    return (
+      <BlogPageContent initialPosts={allPosts} totalPosts={allPosts.length} />
+    );
+  } catch (error) {
+    return (
+      <div className="text-center py-10 text-red-500">
+        Failed to load blog posts
+      </div>
+    );
+  }
+}
+
+export default function BlogPage() {
+  const postsPromise = getData();
 
   return (
     <>
-      <header className="text-center mb-10 lg:mb-14">
+      <header className="text-center mb-4 lg:mb-4">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-accent mb-4 sm:mb-6">
           My Latest Blog
         </h1>
@@ -57,12 +73,9 @@ const BlogPage = async () => {
         </p>
       </header>
 
-      <BlogPageContent
-        initialPosts={initialPosts}
-        totalPosts={allPosts.length}
-      />
+      <Suspense fallback={<BlogLoading />}>
+        <BlogContent postsPromise={postsPromise} />
+      </Suspense>
     </>
   );
-};
-
-export default BlogPage;
+}
