@@ -16,12 +16,29 @@ const generateSitemap = async () => {
     { url: "/portfolio", changefreq: "monthly", priority: 0.7 },
   ];
 
-  const blogPages = posts.map((post) => ({
-    url: `/blog/${post.slug}`,
-    changefreq: "weekly",
-    priority: 0.8,
-    lastmod: post.createdAt,
-  }));
+  const blogPages = posts.map((post) => {
+    const postDate = new Date(post.createdAt);
+    const ageInMonths =
+      (Date.now() - postDate.getTime()) / (30 * 24 * 60 * 60 * 1000);
+
+    // Dynamic change frequency based on post age
+    let changefreq;
+    if (ageInMonths < 1)
+      changefreq = "weekly"; // New posts (less than 1 month old)
+    else if (ageInMonths < 6)
+      changefreq = "monthly"; // Recent posts (1-6 months old)
+    else changefreq = "yearly"; // Older posts (6+ months old)
+
+    // Dynamic priority that decreases with age (from 1.0 to 0.5)
+    const priority = Math.max(0.5, 1 - ageInMonths * 0.1);
+
+    return {
+      url: `/blog/${post.slug}`,
+      changefreq,
+      priority: priority.toFixed(1),
+      lastmod: post.createdAt,
+    };
+  });
 
   const pages = [...staticPages, ...blogPages];
 

@@ -7,7 +7,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { JetBrains_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-//fonts config
+
+// Fonts config
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
@@ -16,79 +17,107 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me"
+  ),
   title: {
-    default: "Ayon Bit - FullStack Developer",
-    template: "%s | Ayon Bit",
+    default: "Ayon Bit - FullStack Developer | React & Next.js Specialist",
+    template: "%s | Ayon Bit - FullStack Developer",
   },
   description:
-    "Ayon Bit is a Full-Stack Developer specializing in React, Next.js, Node.js, and MongoDB. Building fast, scalable, and user-friendly web applications.",
+    "Professional Full-Stack Developer specializing in React, Next.js, Node.js, and MongoDB. Building fast, scalable, and SEO-optimized web applications with modern technologies.",
   keywords: [
     "Ayon Bit",
-    "Bangladeshi Developer",
-    "Web Developer in Bangladesh",
-    "Web Developer",
-    "Web Designer",
-    "Bangladeshi Full-Stack Developer",
-    "FullStack Developer",
-    "Next.js Developer",
+    "FullStack Developer Bangladesh",
     "React Developer",
-    "Node.js Developer",
-    "Freelance Web Developer",
-    "Modern Web Developer",
-    "Frontend Developer",
+    "Next.js Expert",
     "MERN Stack Developer",
-    "Responsive Web Designer",
-    "SEO Friendly Web Developer",
-    "Portfolio Website Developer",
+    "Web Application Development",
+    "SEO Friendly Websites",
+    "Frontend Developer Bangladesh",
+    "Backend Developer",
+    "JavaScript Specialist",
+    "TypeScript Developer",
+    "Responsive Web Design",
+    "Performance Optimization",
+    "Web Development Services",
   ],
   authors: [{ name: "Ayon Bit", url: "https://ayonbit.me" }],
   creator: "Ayon Bit",
+  publisher: "Ayon Bit",
   robots: {
     index: true,
     follow: true,
     nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
-    icon: ["/favicon.ico"],
-    apple: ["/apple-touch-icon.png"],
-    shortcut: ["/favicon.ico"],
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+    other: {
+      rel: "mask-icon",
+      url: "/safari-pinned-tab.svg",
+      color: "#5bbad5",
+    },
   },
-
+  manifest: "/site.webmanifest",
   openGraph: {
-    title: "Ayon Bit - FullStack Developer",
+    title: "Ayon Bit - FullStack Developer | React & Next.js Specialist",
     description:
-      "Ayon Bit builds fast, scalable, and modern web applications with React, Next.js, and Node.js. Delivering results you can trust.",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me",
-    siteName: "Ayon Bit",
+      "Professional Full-Stack Developer building fast, scalable, and SEO-optimized web applications with React, Next.js, and Node.js.",
+    url: "/",
+    siteName: "Ayon Bit - Portfolio",
     images: [
       {
-        url: `${
-          process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me"
-        }/images/opengraph-image.png`,
+        url: "/images/opengraph-image.png",
         width: 1200,
         height: 630,
-        alt: "Ayon Bit - FullStack Developer",
+        alt: "Ayon Bit - FullStack Developer Portfolio",
       },
     ],
+    locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Ayon Bit - FullStack Developer",
     description:
-      "Building responsive and modern web applications using the latest technologies like React, Next.js, and Node.js.",
-    images: [`${process.env.NEXT_PUBLIC_SITE_URL}/images/opengraph-image.png`],
+      "Building responsive and modern web applications using React, Next.js, and Node.js with focus on performance and SEO.",
     creator: "@AyonBit",
+    images: ["/images/opengraph-image.png"],
   },
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me",
+    canonical: "/",
   },
+  verification: {
+    google: process.env.GOOGLE_SEARCH_CONSOLE_ID,
+    yandex: process.env.YANDEX_VERIFICATION_ID,
+  },
+  category: "technology",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={jetbrainsMono.variable}>
+    <html lang="en" className="scroll-smooth">
+      <head>
+        <meta name="theme-color" content="#000000" />
+        <meta name="msapplication-TileColor" content="#000000" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          href="/rss.xml"
+          title="Ayon Bit's Blog RSS Feed"
+        />
+      </head>
+      <body className={`${jetbrainsMono.variable} font-sans antialiased`}>
         <AuthProvider>
           <Toaster
             reverseOrder={true}
@@ -97,12 +126,31 @@ export default function RootLayout({ children }) {
           />
           <StairTransition />
           <Header />
-
           <PageTransition>{children}</PageTransition>
         </AuthProvider>
-        {/* Vercel Analytics & Speed Insights */}
         <Analytics />
         <SpeedInsights />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Ayon Bit",
+              jobTitle: "FullStack Developer",
+              url: "https://ayonbit.me",
+              sameAs: [
+                "https://github.com/ayonbit",
+                "https://facebook.com/ayonbit",
+                "https://twitter.com/ayonbit",
+              ],
+              worksFor: {
+                "@type": "Organization",
+                name: "Freelance",
+              },
+            }),
+          }}
+        />
       </body>
     </html>
   );
