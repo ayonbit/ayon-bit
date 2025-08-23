@@ -1,4 +1,5 @@
 "use client";
+
 import RichTextEditor from "@/components/TextEditor/RichTextEditor.client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ export default function WritePage() {
   const { status } = useSession();
   const router = useRouter();
   const autoSaveTimer = useRef();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessingImages, setIsProcessingImages] = useState(false);
 
@@ -27,32 +29,43 @@ export default function WritePage() {
     title: "",
     post: "",
     tags: [],
-    images: null,
+    images: [],
   });
   const [tagInput, setTagInput] = useState("");
+
+  // Ref to always have the latest form state
+  const formRef = useRef(form);
+  useEffect(() => {
+    formRef.current = form;
+  }, [form]);
 
   // Load draft from localStorage
   useEffect(() => {
     if (status === "authenticated") {
       const savedDraft = localStorage.getItem("blogDraft");
       if (savedDraft) {
-        setForm(JSON.parse(savedDraft));
+        try {
+          const draft = JSON.parse(savedDraft);
+          setForm(draft);
+        } catch {
+          // ignore parse errors
+        }
       }
     }
   }, [status]);
 
-  // Auto-save draft
+  // Auto-save draft (only one interval, uses formRef)
   useEffect(() => {
     if (status === "authenticated") {
       autoSaveTimer.current = setInterval(() => {
-        if (form.title || form.post) {
-          localStorage.setItem("blogDraft", JSON.stringify(form));
+        const { title, post } = formRef.current;
+        if (title || post) {
+          localStorage.setItem("blogDraft", JSON.stringify(formRef.current));
         }
       }, AUTO_SAVE_INTERVAL);
     }
-
     return () => clearInterval(autoSaveTimer.current);
-  }, [form, status]);
+  }, [status]);
 
   // Redirect if unauthenticated
   useEffect(() => {
@@ -61,56 +74,58 @@ export default function WritePage() {
     }
   }, [status, router]);
 
-  // Debounced editor change handler
-  const handleEditorChange = useCallback(
-    debounce(async (html) => {
-      if (html === form.post) return;
+  // Debounced editor change handler (no ESLint warnings now)
+  const handleEditorChange = useMemo(
+    () =>
+      debounce(async (html) => {
+        if (html === formRef.current.post) return;
 
-      setForm((prev) => ({ ...prev, post: html }));
+        setForm((prev) => ({ ...prev, post: html }));
 
-      const matches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)];
-      const imageUrls = matches.map((match) => match[1]);
+        const matches = [...html.matchAll(/<img[^>]+src="([^">]+)"/g)];
+        const imageUrls = matches.map((match) => match[1]);
 
-      if (imageUrls.length > MAX_IMAGES) {
-        toast.error(`Maximum ${MAX_IMAGES} images allowed`);
-        return;
-      }
+        if (imageUrls.length > MAX_IMAGES) {
+          toast.error(`Maximum ${MAX_IMAGES} images allowed`);
+          return;
+        }
 
-      setIsProcessingImages(true);
-      try {
-        const resizedImages = await Promise.all(
-          imageUrls.map(async (imgSrc) => {
-            return imgSrc.startsWith("data:image")
-              ? await resizeImage(imgSrc, IMAGE_SIZE, IMAGE_SIZE)
-              : imgSrc;
-          })
-        );
-        setForm((prev) => ({ ...prev, images: resizedImages }));
-      } catch (error) {
-        toast.error("Failed to process images");
-      } finally {
-        setIsProcessingImages(false);
-      }
-    }, 500),
-    [form.post]
+        setIsProcessingImages(true);
+        try {
+          const resizedImages = await Promise.all(
+            imageUrls.map(async (imgSrc) => {
+              return imgSrc.startsWith("data:image")
+                ? await resizeImage(imgSrc, IMAGE_SIZE, IMAGE_SIZE)
+                : imgSrc;
+            })
+          );
+          setForm((prev) => ({ ...prev, images: resizedImages }));
+        } catch {
+          toast.error("Failed to process images");
+        } finally {
+          setIsProcessingImages(false);
+        }
+      }, 500),
+    [] // runs only once
   );
 
   // Tag management
   const handleTagInput = (e) => {
-    if (e.key === "Enter" && tagInput.trim()) {
+    if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
       e.preventDefault();
+      const newTag = tagInput.trim().toLowerCase();
       if (form.tags.length >= MAX_TAGS) {
         toast.error(`Maximum ${MAX_TAGS} tags allowed`);
         return;
       }
-      if (tagInput.length > TAG_MAX_LENGTH) {
+      if (newTag.length > TAG_MAX_LENGTH) {
         toast.error(`Tags must be less than ${TAG_MAX_LENGTH} characters`);
         return;
       }
-      if (!form.tags.includes(tagInput.trim())) {
+      if (!form.tags.includes(newTag)) {
         setForm((prev) => ({
           ...prev,
-          tags: [...prev.tags, tagInput.trim()],
+          tags: [...prev.tags, newTag],
         }));
         setTagInput("");
       }
@@ -159,14 +174,13 @@ export default function WritePage() {
         throw new Error(data.message || "Submission failed");
       }
 
-      // Clear draft on successful submission
       localStorage.removeItem("blogDraft");
 
       toast.success("Post published successfully!");
       router.push(`/blog/${data.slug || ""}`);
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error(error.message || "Failed to publish post");
+      toast.error(error?.message || "Something went wrong. Try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -193,14 +207,19 @@ export default function WritePage() {
     [form.tags, removeTag]
   );
 
+  // Loading state
   if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin h-10 w-10 border-4 border-white border-t-transparent rounded-full" />
+        <div
+          className="animate-spin h-10 w-10 border-4 border-white border-t-transparent rounded-full"
+          aria-label="Loading"
+        />
       </div>
     );
   }
 
+  // Main UI
   if (status === "authenticated") {
     return (
       <div className="min-h-screen bg-primary text-white">
@@ -213,6 +232,7 @@ export default function WritePage() {
           </header>
 
           <div className="space-y-6">
+            {/* Title */}
             <div>
               <label htmlFor="title" className="block mb-2 font-medium">
                 Title
@@ -232,6 +252,7 @@ export default function WritePage() {
               />
             </div>
 
+            {/* Content */}
             <div>
               <label className="block mb-2 font-medium">Content</label>
               <RichTextEditor
@@ -240,12 +261,13 @@ export default function WritePage() {
                 className="min-h-[300px]"
               />
               {isProcessingImages && (
-                <div className="text-sm text-gray-400 mt-2">
+                <div className="text-sm text-gray-400 mt-2" aria-live="polite">
                   Processing images...
                 </div>
               )}
             </div>
 
+            {/* Tags */}
             <div>
               <label className="block mb-2 font-medium">
                 Tags
@@ -257,7 +279,7 @@ export default function WritePage() {
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagInput}
-                placeholder="Type and press Enter to add tags"
+                placeholder="Type and press Enter or comma to add tags"
                 className="w-full bg-gray-800 border-gray-700"
                 maxLength={TAG_MAX_LENGTH}
               />
@@ -266,6 +288,7 @@ export default function WritePage() {
               )}
             </div>
 
+            {/* Actions */}
             <div className="pt-4 border-t border-gray-700 flex flex-col sm:flex-row gap-3">
               <Button
                 onClick={handleSubmit}

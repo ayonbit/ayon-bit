@@ -5,15 +5,25 @@ import { Suspense } from "react";
 export const dynamic = "force-dynamic";
 
 const getData = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`, {
-    next: { revalidate: 60 }, // Revalidate every 60 seconds
-  });
-  if (!res.ok) {
-    throw new Error("Failed to Fetch Blog");
-  }
-  return res.json();
-};
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`, {
+      // Disable caching for large responses
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
+    if (!res.ok) {
+      throw new Error(`Failed to fetch blog posts: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
+  }
+};
 // SEO
 export const metadata = {
   title: "My Latest Blog",
