@@ -1,7 +1,7 @@
 import { AboutCard } from "@/components/AboutCard";
 
 export const metadata = {
-  title: "About",
+  title: "About Me",
   description:
     "Learn more about Ayon Bit's experience, skills, education, and journey as a Full-Stack Developer.",
   keywords: [
