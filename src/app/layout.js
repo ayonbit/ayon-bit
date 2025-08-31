@@ -108,28 +108,41 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        {/* Theme + App Colors */}
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
+
+        {/* RSS Feed */}
         <link
           rel="alternate"
           type="application/rss+xml"
           href="/rss.xml"
           title="Ayon Bit's Blog RSS Feed"
         />
-      </head>
-      <body className={`${jetbrainsMono.variable} font-sans antialiased`}>
-        <AuthProvider>
-          <Toaster
-            reverseOrder={true}
-            position="top-right"
-            toastOptions={{ duration: 4000 }}
-          />
-          <StairTransition />
-          <Header />
-          <PageTransition>{children}</PageTransition>
-        </AuthProvider>
-        <Analytics />
-        <SpeedInsights />
+
+        {/* Brand / Site Name Signals */}
+        <meta property="og:site_name" content="Ayon Bit" />
+        <meta name="application-name" content="Ayon Bit" />
+        <meta name="apple-mobile-web-app-title" content="Ayon Bit" />
+
+        {/* JSON-LD: Website Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              url: "https://ayonbit.me",
+              name: "Ayon Bit",
+              publisher: {
+                "@type": "Person",
+                name: "Ayon Bit",
+              },
+            }),
+          }}
+        />
+
+        {/* JSON-LD: Person Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -151,6 +164,21 @@ export default function RootLayout({ children }) {
             }),
           }}
         />
+      </head>
+
+      <body className={`${jetbrainsMono.variable} font-sans antialiased`}>
+        <AuthProvider>
+          <Toaster
+            reverseOrder={true}
+            position="top-right"
+            toastOptions={{ duration: 4000 }}
+          />
+          <StairTransition />
+          <Header />
+          <PageTransition>{children}</PageTransition>
+        </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
