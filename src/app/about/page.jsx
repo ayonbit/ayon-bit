@@ -49,11 +49,6 @@ export const metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/about`,
   },
-
-  robots: {
-    index: true,
-    follow: true,
-  },
 };
 const AboutPage = () => {
   return (
