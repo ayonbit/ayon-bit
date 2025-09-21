@@ -111,6 +111,8 @@ export default function RootLayout({ children }) {
         {/* Theme + App Colors */}
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
+        {/* Site manifest */}
+        <link rel="manifest" href="/site.webmanifest" />
 
         {/* RSS Feed */}
         <link

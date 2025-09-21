@@ -3,7 +3,7 @@ import PortfolioCard from "@/components/PortfolioCard";
 //SEO
 export async function generateMetadata() {
   return {
-    title: "Portfolio | My Creative Projects",
+    title: "Portfolio - My Creative Projects",
     description:
       "Explore my portfolio showcasing projects in web development, design, and creative work.",
     openGraph: {
