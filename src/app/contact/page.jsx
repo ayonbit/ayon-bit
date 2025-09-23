@@ -40,8 +40,8 @@ const Contact = () => {
     {
       icon: <FaWhatsapp className="text-xl md:text-2xl" />,
       title: "WhatsApp",
-      description: "+8801686354606",
-      link: "https://wa.me/+8801686354606",
+      description: "+8801723924834",
+      link: "https://wa.me/+8801723924834",
     },
     {
       icon: <FaMapMarkedAlt className="text-xl md:text-2xl" />,
