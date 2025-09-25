@@ -256,6 +256,12 @@ export default function RootLayout({ children }) {
         {/* Additional Verification Methods */}
         <link rel="me" href={baseUrl} />
         <link rel="me" href="mailto:ayonbit@gmail.com" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
       </head>
 
       <body
