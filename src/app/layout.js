@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 // Base URL configuration
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 const siteName = "Ayon Bit";
 const professionalTitle = "FullStack Developer | React & Next.js Specialist";
 const description =
@@ -75,16 +75,10 @@ export const metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
     shortcut: "/favicon.ico",
-    other: {
-      rel: "mask-icon",
-      url: "/safari-pinned-tab.svg",
-      color: "#5bbad5",
-    },
   },
   manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
-    locale: "en_US",
     url: baseUrl,
     siteName: siteName,
     title: `${siteName} - ${professionalTitle}`,
@@ -113,16 +107,6 @@ export const metadata = {
       "application/rss+xml": "/rss.xml",
     },
   },
-  verification: {
-    google: process.env.GOOGLE_SEARCH_CONSOLE_ID,
-    yandex: process.env.YANDEX_VERIFICATION_ID,
-    me: baseUrl, // Added rel=me for verification
-  },
-  category: "technology",
-  other: {
-    "facebook:page": siteName,
-    "fb:app_id": process.env.FACEBOOK_APP_ID, // Add if available
-  },
 };
 
 // Structured Data for better SEO
@@ -150,7 +134,7 @@ const personSchema = {
   description: description,
   jobTitle: "FullStack Developer",
   url: baseUrl,
-  image: `${baseUrl}/images/ayon-bit-profile.jpg`,
+  image: `${baseUrl}/assets/updateprofile.png`,
   sameAs: [
     "https://github.com/ayonbit",
     "https://linkedin.com/in/ayonbit",
@@ -175,7 +159,6 @@ const personSchema = {
   hasOccupation: {
     "@type": "Occupation",
     name: "FullStack Developer",
-    qualifications: "Bachelor's Degree in Computer Science",
   },
   worksFor: {
     "@type": "Organization",
@@ -189,7 +172,7 @@ const organizationSchema = {
   name: siteName,
   alternateName: "Ayon Bit Development",
   url: baseUrl,
-  logo: `${baseUrl}/images/logo.png`,
+  logo: `${baseUrl}/images/icon.ico`,
   description: `Professional web development services by ${siteName}`,
   sameAs: [
     "https://github.com/ayonbit",
@@ -272,7 +255,7 @@ export default function RootLayout({ children }) {
 
         {/* Additional Verification Methods */}
         <link rel="me" href={baseUrl} />
-        <link rel="me" href="mailto:contact@ayonbit.me" />
+        <link rel="me" href="mailto:ayonbit@gmail.com" />
       </head>
 
       <body

@@ -519,7 +519,7 @@ export const socials = [
   { icon: <FaFacebook />, path: "https://www.facebook.com/ayonbit" },
   { icon: <FaInstagram />, path: "https://www.instagram.com/ayonbit" },
   { icon: <FaTwitter />, path: "https://x.com/ayonbit" },
-  { icon: <FaWhatsapp />, path: "https://wa.me/+8801723924834" },
+  { icon: <FaWhatsapp />, path: "https://wa.me/+8801686354606" },
 
   {
     icon: <FaCoffee />,
