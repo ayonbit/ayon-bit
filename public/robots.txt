@@ -4,7 +4,7 @@ Disallow: /admin/
 Disallow: /write/
 Disallow: /sign-in/
 Disallow: /dashboard/
-
+Disallow: /favicon.ico
 # Allow the sitemap API route to be crawled
 Allow: /api/sitemap
 
