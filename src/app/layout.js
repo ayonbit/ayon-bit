@@ -262,6 +262,7 @@ export default function RootLayout({ children }) {
           sizes="180x180"
           href="/apple-touch-icon.png"
         />
+        <link rel="canonical" href={baseUrl} />
       </head>
 
       <body
