@@ -1,10 +1,9 @@
 // src/app/api/sitemap/route.js
+import prisma from "@/lib/server";
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma"; // ✅ make sure this file exists
-// or adjust path based on your setup
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me";
 
 async function generateSitemap() {
   const posts = await prisma.post.findMany({

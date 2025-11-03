@@ -1,6 +1,6 @@
+import prisma from "@/lib/server";
 import { authOptions } from "@/utils/auth";
 import cloudinary from "@/utils/cloudinary";
-import prisma from "@/utils/server";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
