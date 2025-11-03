@@ -1,3 +1,4 @@
+// src/app/layout.js
 import Header from "@/components/Header";
 import PageTransition from "@/components/PageTransition";
 import StairTransition from "@/components/StairTransition";
@@ -5,10 +6,11 @@ import AuthProvider from "@/utils/AuthProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
-// Fonts config
+// Load custom font
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
@@ -16,8 +18,8 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-// Base URL configuration
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+// Base metadata
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me";
 const siteName = "Ayon Bit";
 const professionalTitle = "FullStack Developer | React & Next.js Specialist";
 const description =
@@ -29,60 +31,19 @@ export const metadata = {
     default: `${siteName} - ${professionalTitle}`,
     template: `%s | ${siteName} - FullStack Developer`,
   },
-  description: description,
-  keywords: [
-    // Primary brand keywords
-    "Ayon Bit",
-    "Ayon Bit FullStack Developer",
-    "Ayon Bit Portfolio",
-    "Ayon Bit React Developer",
-    "Ayon Bit Next.js Expert",
-
-    // Professional services
-    "FullStack Developer Bangladesh",
-    "React Developer Bangladesh",
-    "Next.js Developer",
-    "MERN Stack Developer",
-    "JavaScript Specialist Bangladesh",
-
-    // Technical skills
-    "Web Application Development",
-    "SEO Friendly Websites",
-    "Frontend Developer",
-    "Backend Developer",
-    "TypeScript Developer",
-    "Responsive Web Design",
-    "Performance Optimization",
-    "Web Development Services",
-  ],
-  authors: [{ name: siteName, url: baseUrl }],
-  creator: siteName,
-  publisher: siteName,
-  robots: {
-    index: true,
-    follow: true,
-    nocache: false,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
+  description,
+  manifest: "/site.webmanifest",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
     shortcut: "/favicon.ico",
   },
-  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
     url: baseUrl,
-    siteName: siteName,
+    siteName,
     title: `${siteName} - ${professionalTitle}`,
-    description: description,
+    description,
     images: [
       {
         url: "/images/opengraph-image.png",
@@ -101,94 +62,26 @@ export const metadata = {
     site: "@AyonBit",
     images: ["/images/opengraph-image.png"],
   },
-  alternates: {
-    canonical: baseUrl,
-    types: {
-      "application/rss+xml": "/rss.xml",
+};
+
+// Structured data
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: siteName,
+      url: baseUrl,
+      description,
     },
-  },
-};
-
-// Structured Data for better SEO
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: siteName,
-  url: baseUrl,
-  description: description,
-  publisher: {
-    "@type": "Person",
-    name: siteName,
-  },
-  potentialAction: {
-    "@type": "SearchAction",
-    target: `${baseUrl}/search?q={search_term_string}`,
-    "query-input": "required name=search_term_string",
-  },
-};
-
-const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: siteName,
-  description: description,
-  jobTitle: "FullStack Developer",
-  url: baseUrl,
-  image: `${baseUrl}/assets/updateprofile.png`,
-  sameAs: [
-    "https://github.com/ayonbit",
-    "https://linkedin.com/in/ayonbit",
-    "https://twitter.com/ayonbit",
-    "https://facebook.com/ayonbit",
-    "https://instagram.com/ayonbit",
+    {
+      "@type": "Person",
+      name: siteName,
+      jobTitle: "FullStack Developer",
+      url: baseUrl,
+      image: `${baseUrl}/assets/updateprofile.png`,
+    },
   ],
-  knowsAbout: [
-    "React",
-    "Next.js",
-    "Node.js",
-    "JavaScript",
-    "TypeScript",
-    "MongoDB",
-    "Web Development",
-    "SEO Optimization",
-    "Responsive Design",
-    "Frontend Development",
-    "Backend Development",
-    "Database Management",
-  ],
-  hasOccupation: {
-    "@type": "Occupation",
-    name: "FullStack Developer",
-  },
-  worksFor: {
-    "@type": "Organization",
-    name: "Freelance",
-  },
-};
-
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: siteName,
-  alternateName: "Ayon Bit Development",
-  url: baseUrl,
-  logo: `${baseUrl}/images/icon.ico`,
-  description: `Professional web development services by ${siteName}`,
-  sameAs: [
-    "https://github.com/ayonbit",
-    "https://twitter.com/ayonbit",
-    "https://linkedin.com/company/ayonbit",
-  ],
-  address: {
-    "@type": "PostalAddress",
-    addressCountry: "BD",
-    addressRegion: "Bangladesh",
-  },
-  contactPoint: {
-    "@type": "ContactPoint",
-    email: "contact@ayonbit.me",
-    contactType: "Customer Service",
-  },
 };
 
 export default function RootLayout({ children }) {
@@ -200,74 +93,46 @@ export default function RootLayout({ children }) {
       itemType="https://schema.org/WebPage"
     >
       <head>
-        {/* Theme + App Colors */}
+        {/*  Manifest & Icon Links for PWA */}
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#000000" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content={siteName} />
+        <meta name="application-name" content={siteName} />
         <meta name="msapplication-TileColor" content="#000000" />
 
-        {/* Site Manifest */}
-        <link rel="manifest" href="/site.webmanifest" />
-
-        {/* RSS Feed */}
+        {/*  Icons for all devices */}
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link
-          rel="alternate"
-          type="application/rss+xml"
-          href="/rss.xml"
-          title={`${siteName}'s Blog RSS Feed`}
+          rel="icon"
+          type="image/png"
+          sizes="192x192"
+          href="/icons/icon-192x192.png"
         />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="512x512"
+          href="/icons/icon-512x512.png"
+        />
+        <link rel="shortcut icon" href="/favicon.ico" />
 
-        {/* Enhanced Brand Signals */}
-        <meta property="og:site_name" content={siteName} />
-        <meta name="application-name" content={siteName} />
-        <meta name="apple-mobile-web-app-title" content={siteName} />
+        {/*  Canonical URL */}
+        <link rel="canonical" href={baseUrl} />
 
-        {/* Additional Brand Meta Tags */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="HandheldFriendly" content="true" />
-        <meta name="mobile-web-app-capable" content="yes" />
-
-        {/* Preload Critical Resources */}
+        {/*  Preload Fonts for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-
-        {/* Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-          key="website-schema"
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-          key="person-schema"
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
-          }}
-          key="organization-schema"
-        />
-
-        {/* Additional Verification Methods */}
-        <link rel="me" href={baseUrl} />
-        <link rel="me" href="mailto:ayonbit@gmail.com" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
-        <link rel="canonical" href={baseUrl} />
       </head>
 
       <body
         className={`${jetbrainsMono.variable} font-sans antialiased`}
-        itemScope
+        itemScope={true}
         itemType="https://schema.org/WebPage"
         itemID={baseUrl}
       >
@@ -284,21 +149,17 @@ export default function RootLayout({ children }) {
           <Header />
           <PageTransition>{children}</PageTransition>
         </AuthProvider>
+
         <Analytics />
         <SpeedInsights />
 
-        {/* Hidden Brand Name for SEO (optional) */}
-        <div
-          style={{ display: "none" }}
-          aria-hidden="true"
-          itemProp="name"
-          itemScope
-          itemType="https://schema.org/Person"
-        >
-          <span itemProp="name">{siteName}</span>
-          <span itemProp="jobTitle">FullStack Developer</span>
-          <span itemProp="description">{description}</span>
-        </div>
+        {/*  Structured data for SEO */}
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </body>
     </html>
   );

@@ -1,9 +1,12 @@
-import prisma from "@/utils/server";
+// src/app/api/sitemap/route.js
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma"; // ✅ make sure this file exists
+// or adjust path based on your setup
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me";
 
-const generateSitemap = async () => {
+async function generateSitemap() {
   const posts = await prisma.post.findMany({
     select: { slug: true, createdAt: true },
   });
@@ -21,15 +24,9 @@ const generateSitemap = async () => {
     const ageInMonths =
       (Date.now() - postDate.getTime()) / (30 * 24 * 60 * 60 * 1000);
 
-    // Dynamic change frequency based on post age
-    let changefreq;
-    if (ageInMonths < 1)
-      changefreq = "weekly"; // New posts (less than 1 month old)
-    else if (ageInMonths < 6)
-      changefreq = "monthly"; // Recent posts (1-6 months old)
-    else changefreq = "yearly"; // Older posts (6+ months old)
+    let changefreq =
+      ageInMonths < 1 ? "weekly" : ageInMonths < 6 ? "monthly" : "yearly";
 
-    // Dynamic priority that decreases with age (from 1.0 to 0.5)
     const priority = Math.max(0.5, 1 - ageInMonths * 0.1);
 
     return {
@@ -46,7 +43,7 @@ const generateSitemap = async () => {
     .map(
       (page) => `
       <url>
-        <loc>${BASE_URL}${page.url}</loc>
+        <loc>${BASE_URL.replace(/\/$/, "")}${page.url}</loc>
         <lastmod>${
           page.lastmod
             ? new Date(page.lastmod).toISOString()
@@ -62,19 +59,20 @@ const generateSitemap = async () => {
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       ${xmlContent}
     </urlset>`;
-};
+}
 
 export async function GET() {
   try {
     const sitemap = await generateSitemap();
 
-    return new Response(sitemap, {
+    return new NextResponse(sitemap, {
       headers: {
         "Content-Type": "application/xml",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
       },
     });
   } catch (error) {
-    console.error("Failed to generate sitemap:", error);
+    console.error(" Failed to generate sitemap:", error);
     return new NextResponse("Failed to generate sitemap", { status: 500 });
   }
 }
