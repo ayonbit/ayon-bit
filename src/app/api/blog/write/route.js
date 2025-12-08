@@ -1,4 +1,4 @@
-import prisma from "@/lib/server";
+import prisma from "@/lib/prisma";
 import { authOptions } from "@/utils/auth";
 import cloudinary from "@/utils/cloudinary";
 import { getServerSession } from "next-auth";

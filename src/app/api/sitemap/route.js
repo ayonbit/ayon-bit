@@ -1,7 +1,6 @@
 // src/app/api/sitemap/route.js
-import prisma from "@/lib/server";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
-
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ayonbit.me";
 
